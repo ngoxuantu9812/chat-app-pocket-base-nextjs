@@ -1,7 +1,9 @@
+// pages/index.tsx
 import { useState, useEffect, FormEvent } from 'react';
 import pb from '../../lib/pocketbase';
 import { useAuth } from '../../hooks/useAuth';
-import { Message } from '../../lib/types';
+import Messages from "./Messages";
+import {Message} from "../../lib/types";
 
 export default function Chat() {
     const { user, logout } = useAuth();
@@ -9,6 +11,7 @@ export default function Chat() {
     const [newMessage, setNewMessage] = useState('');
 
     useEffect(() => {
+        if (!user) return;
         const fetchMessages = async () => {
             const records = await pb.collection('messages').getFullList<Message>({
                 expand: 'sender',
@@ -17,21 +20,15 @@ export default function Chat() {
         };
 
         fetchMessages();
-
-        pb.collection('messages').subscribe('*', () => {
-            fetchMessages();
-        });
-
-        return () => {
-            pb.collection('messages').unsubscribe('*');
-        };
-    }, []);
+    }, [user]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        if (!user) return;
+
         await pb.collection('messages').create({
             content: newMessage,
-            sender: user?.id,
+            sender: user.id,
         });
         setNewMessage('');
     };
@@ -40,24 +37,18 @@ export default function Chat() {
 
     return (
         <>
-            {/*<button onClick={logout}>Logout</button>*/}
-            {/*<div>*/}
-            {/*    {messages.map((msg) => (*/}
-            {/*        <div key={msg.id}>*/}
-            {/*            <strong>{msg.expand.sender.email}</strong>: {msg.content}*/}
-            {/*        </div>*/}
-            {/*    ))}*/}
-            {/*</div>*/}
-            {/*<form onSubmit={handleSubmit}>*/}
-            {/*    <input*/}
-            {/*        type="text"*/}
-            {/*        value={newMessage}*/}
-            {/*        onChange={(e) => setNewMessage(e.target.value)}*/}
-            {/*        placeholder="Type a message"*/}
-            {/*        required*/}
-            {/*    />*/}
-            {/*    <button type="submit">Send</button>*/}
-            {/*</form>*/}
+            <button onClick={logout}>Logout 1</button>
+            <Messages messages={messages}/>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type a message"
+                    required
+                />
+                <button type="submit">Send</button>
+            </form>
         </>
     );
 }
