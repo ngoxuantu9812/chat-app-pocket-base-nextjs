@@ -25,6 +25,7 @@ import {
   EyeOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import ProtectedRoute, { PermissionWrapper, usePermissions } from '@/components/ProtectedRoute';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -78,11 +79,12 @@ const initialProducts: Product[] = [
   },
 ];
 
-export default function ProductManagement() {
+function ProductManagementContent() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [form] = Form.useForm();
+  const { hasPermission } = usePermissions();
 
   const columns: ColumnsType<Product> = [
     {
@@ -248,9 +250,11 @@ export default function ProductManagement() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <Title level={2}>Product Management</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-          Add Product
-        </Button>
+        {hasPermission('products:write') && (
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+            Add Product
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -372,5 +376,13 @@ export default function ProductManagement() {
         </Form>
       </Modal>
     </div>
+  );
+}
+
+export default function ProductManagement() {
+  return (
+    <ProtectedRoute requiredPermissions={['products:read']}>
+      <ProductManagementContent />
+    </ProtectedRoute>
   );
 }

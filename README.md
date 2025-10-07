@@ -4,6 +4,14 @@ A comprehensive Next.js admin panel built with Ant Design for managing stones, p
 
 ## Features
 
+### 🔐 Authentication System
+- **Login/Logout**: Secure authentication with JWT tokens
+- **Role-based Access**: Admin and User roles with different permissions
+- **Route Protection**: Protected routes and components based on permissions
+- **Session Management**: Automatic token refresh and session persistence
+- **Password Management**: Change password functionality
+- **Demo Accounts**: Pre-configured accounts for testing different roles
+
 ### 🏗️ Admin Layout
 - Responsive sidebar navigation
 - Collapsible menu
@@ -125,6 +133,18 @@ npm run dev
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 The app will automatically redirect to the admin panel at `/admin`.
+
+### Demo Credentials
+
+The application includes pre-configured demo accounts for testing different roles:
+
+| Role | Email | Password | Permissions |
+|------|-------|----------|-------------|
+| **Admin** | admin@stonesolutions.com | admin123 | Full access to all features |
+| **Manager** | manager@stonesolutions.com | manager123 | Products, posts, and stones management |
+| **Editor** | editor@stonesolutions.com | editor123 | Limited to posts and banners |
+
+You can use these credentials to test the authentication system and role-based access control.
 
 ## Features in Detail
 

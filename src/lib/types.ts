@@ -106,3 +106,20 @@ export interface ApiResponse<T> {
   error?: string;
   message?: string;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'user';
+  avatar?: string;
+  permissions: string[];
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user?: User;
+  token?: string;
+  error?: string;
+  message?: string;
+}
